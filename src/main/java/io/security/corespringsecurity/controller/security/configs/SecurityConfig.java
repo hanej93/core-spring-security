@@ -10,9 +10,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import io.security.corespringsecurity.controller.security.handler.CustomAccessDeniedHandler;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -40,7 +42,7 @@ public class SecurityConfig {
 		http
 			.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
 				authorizationManagerRequestMatcherRegistry
-					.requestMatchers("/", "/users", "/login*").permitAll()
+					.requestMatchers("/", "/users", "/login").permitAll()
 					.requestMatchers("/mypage").hasRole("USER")
 					.requestMatchers("/messages").hasRole("MANAGER")
 					.requestMatchers("/config").hasRole("ADMIN")
@@ -51,13 +53,26 @@ public class SecurityConfig {
 				httpSecurityFormLoginConfigurer
 					.loginPage("/login")
 					.loginProcessingUrl("/login_proc")
-					.authenticationDetailsSource(authenticationDetailsSource)
 					.defaultSuccessUrl("/")
+					.authenticationDetailsSource(authenticationDetailsSource)
 					.successHandler(authenticationSuccessHandler)
 					.failureHandler(authenticationFailureHandler)
 					.permitAll();
+			})
+
+			.exceptionHandling(httpSecurityExceptionHandlingConfigurer -> {
+				httpSecurityExceptionHandlingConfigurer
+					.accessDeniedHandler(accessDeniedHandler());
 			});
 
 		return http.build();
+	}
+
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler() {
+		CustomAccessDeniedHandler customAccessDeniedHandler = new CustomAccessDeniedHandler();
+		customAccessDeniedHandler.setErrorPage("/denied");
+
+		return customAccessDeniedHandler;
 	}
 }
