@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final AuthenticationDetailsSource authenticationDetailsSource;
+	private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
@@ -49,6 +51,7 @@ public class SecurityConfig {
 					.loginProcessingUrl("/login_proc")
 					.authenticationDetailsSource(authenticationDetailsSource)
 					.defaultSuccessUrl("/")
+					.successHandler(authenticationSuccessHandler)
 					.permitAll();
 			});
 
