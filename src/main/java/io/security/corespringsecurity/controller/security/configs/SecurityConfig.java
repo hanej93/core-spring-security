@@ -15,8 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import jakarta.websocket.Encoder;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -63,7 +61,7 @@ public class SecurityConfig {
 		http
 			.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
 				authorizationManagerRequestMatcherRegistry
-					.requestMatchers("/", "/user").permitAll()
+					.requestMatchers("/", "/users").permitAll()
 					.requestMatchers("/mypage").hasRole("USER")
 					.requestMatchers("/messages").hasRole("MANAGER")
 					.requestMatchers("/config").hasRole("ADMIN")
@@ -73,6 +71,5 @@ public class SecurityConfig {
 			.formLogin(Customizer.withDefaults());
 
 		return http.build();
-
 	}
 }
