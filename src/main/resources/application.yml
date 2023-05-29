@@ -3,8 +3,9 @@ spring:
     url: jdbc:mysql://localhost:3306/core_security?serverTimezone=Asia/Seoul&chracterEncoding=utf-8
     username: root
     password: mysql
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
-#  datasource:
+  #  datasource:
 #    url: jdbc:h2:mem:security
 #    username: sa
 #    password:
