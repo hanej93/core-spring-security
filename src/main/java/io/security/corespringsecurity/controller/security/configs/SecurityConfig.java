@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class SecurityConfig {
 
 	private final AuthenticationDetailsSource authenticationDetailsSource;
 	private final AuthenticationSuccessHandler authenticationSuccessHandler;
+	private final AuthenticationFailureHandler authenticationFailureHandler;
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
@@ -38,7 +40,7 @@ public class SecurityConfig {
 		http
 			.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
 				authorizationManagerRequestMatcherRegistry
-					.requestMatchers("/", "/users").permitAll()
+					.requestMatchers("/", "/users", "/login*").permitAll()
 					.requestMatchers("/mypage").hasRole("USER")
 					.requestMatchers("/messages").hasRole("MANAGER")
 					.requestMatchers("/config").hasRole("ADMIN")
@@ -52,6 +54,7 @@ public class SecurityConfig {
 					.authenticationDetailsSource(authenticationDetailsSource)
 					.defaultSuccessUrl("/")
 					.successHandler(authenticationSuccessHandler)
+					.failureHandler(authenticationFailureHandler)
 					.permitAll();
 			});
 
