@@ -1,4 +1,4 @@
-package io.security.corespringsecurity.controller.security.handler;
+package io.security.corespringsecurity.security.handler;
 
 import java.io.IOException;
 
