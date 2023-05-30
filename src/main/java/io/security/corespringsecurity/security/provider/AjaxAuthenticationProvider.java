@@ -32,10 +32,7 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 			throw new BadCredentialsException("Invalid password");
 		}
 
-		AjaxAuthenticationToken authenticationToken = new AjaxAuthenticationToken(
-			accountContext.getAccount(), null, accountContext.getAuthorities());
-
-		return authenticationToken;
+		return new AjaxAuthenticationToken(accountContext.getAccount(), null, accountContext.getAuthorities());
 	}
 
 	@Override
