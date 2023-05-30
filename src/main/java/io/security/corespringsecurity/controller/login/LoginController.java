@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import io.security.corespringsecurity.domain.Account;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +29,8 @@ public class LoginController {
 		return "user/login/login";
 	}
 
-	@PostMapping("/api/login")
+	@RequestMapping("/api/login")
+	@ResponseBody
 	public String ajaxLogin(@RequestParam(value = "error", required = false) String error,
 		@RequestParam(value = "exception", required = false) String exception, Model model){
 		model.addAttribute("error", error);

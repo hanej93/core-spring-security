@@ -30,3 +30,9 @@ spring:
     restart:
       enabled: true
     add-properties: true
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
