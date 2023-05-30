@@ -18,6 +18,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import io.security.corespringsecurity.security.common.AjaxAccessDeniedHandler;
+import io.security.corespringsecurity.security.common.AjaxLoginAuthenticationEntryPoint;
 import io.security.corespringsecurity.security.filter.AjaxLoginProcessingFilter;
 import io.security.corespringsecurity.security.handler.AjaxAuthenticationFailureHandler;
 import io.security.corespringsecurity.security.handler.AjaxAuthenticationSuccessHandler;
@@ -115,6 +117,13 @@ public class SecurityConfig {
 			http
 				.authenticationProvider(new AjaxAuthenticationProvider(passwordEncoder(), userDetailsService))
 				.addFilterBefore(ajaxLoginProcessingFilter, UsernamePasswordAuthenticationFilter.class);
+
+			http
+				.exceptionHandling(httpSecurityExceptionHandlingConfigurer -> {
+					httpSecurityExceptionHandlingConfigurer
+						.authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
+						.accessDeniedHandler(new AjaxAccessDeniedHandler());
+				});
 
 			super.configure(http);
 		}
