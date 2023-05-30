@@ -22,6 +22,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
+	public static final String XMLHTTP_REQUEST = "XMLHttpRequest";
+	public static final String X_REQUESTED_WITH = "X-Requested-With";
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	public AjaxLoginProcessingFilter() {
@@ -45,7 +47,7 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
 	}
 
 	private boolean isAjax(HttpServletRequest request) {
-		if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+		if (XMLHTTP_REQUEST.equals(request.getHeader(X_REQUESTED_WITH))) {
 			return true;
 		}
 		return false;

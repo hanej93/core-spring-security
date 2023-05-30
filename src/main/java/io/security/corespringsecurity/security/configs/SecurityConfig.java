@@ -76,7 +76,7 @@ public class SecurityConfig {
 					.accessDeniedPage("/denied")
 					.accessDeniedHandler(accessDeniedHandler());
 			})
-			.csrf(AbstractHttpConfigurer::disable)
+			// .csrf(AbstractHttpConfigurer::disable)
 
 			.authenticationProvider(formAuthenticationProvider)
 			.authenticationProvider(ajaxAuthenticationProvider);
