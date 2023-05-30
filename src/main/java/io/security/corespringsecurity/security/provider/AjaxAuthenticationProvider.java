@@ -8,6 +8,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.security.corespringsecurity.security.service.AccountContext;
 import io.security.corespringsecurity.security.token.AjaxAuthenticationToken;
@@ -20,6 +21,7 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 	private final UserDetailsService userDetailsService;
 
 	@Override
+	@Transactional
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		String username = authentication.getName();
 		String password = (String) authentication.getCredentials();

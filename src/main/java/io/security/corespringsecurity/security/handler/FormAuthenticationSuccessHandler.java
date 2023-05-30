@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class FormAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 	private RequestCache requestCache = new HttpSessionRequestCache();
 	private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();

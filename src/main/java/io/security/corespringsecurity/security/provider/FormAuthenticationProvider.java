@@ -37,7 +37,7 @@ public class FormAuthenticationProvider implements AuthenticationProvider {
 		FormWebAuthenticationDetails formWebAuthenticationDetails = (FormWebAuthenticationDetails)authentication.getDetails();
 		String secretKey = formWebAuthenticationDetails.getSecretKey();
 		if (secretKey == null || !"secret".equals(secretKey)) {
-			throw new InsufficientAuthenticationException("Invalid secret");
+			throw new IllegalArgumentException("Invalid secret");
 		}
 
 		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
