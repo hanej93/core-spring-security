@@ -1,6 +1,5 @@
 package io.security.corespringsecurity.security.metadatasource;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -9,12 +8,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.security.access.ConfigAttribute;
-import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import io.security.corespringsecurity.service.SecurityResourceService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
 	private final LinkedHashMap<RequestMatcher, List<ConfigAttribute>> requestMap;
+	private final SecurityResourceService securityResourceService;
 
 	@Override
 	public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
@@ -51,4 +50,15 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
 	public boolean supports(Class<?> clazz) {
 		return FilterInvocation.class.isAssignableFrom(clazz);
 	}
+
+	public void reload() {
+		LinkedHashMap<RequestMatcher, List<ConfigAttribute>> reloadMap = securityResourceService.getResourceList();
+
+		requestMap.clear();
+
+		reloadMap.entrySet().forEach(entry -> {
+			requestMap.put(entry.getKey(), entry.getValue());
+		});
+	}
+
 }

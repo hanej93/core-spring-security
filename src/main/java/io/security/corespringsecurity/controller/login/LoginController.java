@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import io.security.corespringsecurity.domain.entity.Account;
+import io.security.corespringsecurity.security.service.AccountContext;
 import io.security.corespringsecurity.security.token.AjaxAuthenticationToken;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,13 +44,13 @@ public class LoginController {
 	@GetMapping(value="/denied")
 	public String accessDenied(@RequestParam(value = "exception", required = false) String exception, Principal principal, Model model) throws Exception {
 
-		Account account = null;
+		AccountContext account = null;
 
 		if (principal instanceof UsernamePasswordAuthenticationToken) {
-			account = (Account) ((UsernamePasswordAuthenticationToken) principal).getPrincipal();
+			account = (AccountContext) ((UsernamePasswordAuthenticationToken) principal).getPrincipal();
 
 		}else if(principal instanceof AjaxAuthenticationToken){
-			account = (Account) ((AjaxAuthenticationToken) principal).getPrincipal();
+			account = (AccountContext) ((AjaxAuthenticationToken) principal).getPrincipal();
 		}
 
 		model.addAttribute("username", account.getUsername());

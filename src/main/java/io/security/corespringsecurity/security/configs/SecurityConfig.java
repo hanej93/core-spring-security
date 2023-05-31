@@ -12,7 +12,7 @@ import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.AbstractSecurityBuilder;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -56,8 +56,11 @@ public class SecurityConfig {
 	private final SecurityResourceService securityResourceService;
 
 	@Bean
-	AuthenticationManager authenticationManager() throws Exception {
-		return authenticationConfiguration.getAuthenticationManager();
+	AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+		AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+		authenticationManagerBuilder.authenticationProvider(formAuthenticationProvider);
+		authenticationManagerBuilder.authenticationProvider(ajaxAuthenticationProvider);
+		return authenticationManagerBuilder.build();
 	}
 
 	@Bean
@@ -94,10 +97,10 @@ public class SecurityConfig {
 
 			.csrf(AbstractHttpConfigurer::disable)
 
-			.authenticationProvider(formAuthenticationProvider)
-			.authenticationProvider(ajaxAuthenticationProvider)
+			// .authenticationProvider(formAuthenticationProvider)
+			// .authenticationProvider(ajaxAuthenticationProvider)
 
-			.addFilterBefore(filterSecurityInterceptor(), FilterSecurityInterceptor.class);
+			.addFilterBefore(filterSecurityInterceptor(http), FilterSecurityInterceptor.class);
 
 		customConfigurer(http);
 
@@ -110,7 +113,7 @@ public class SecurityConfig {
 			.successHandlerAjax(ajaxAuthenticationSuccessHandler)
 			.failureHandlerAjax(ajaxAuthenticationFailureHandler)
 			.loginProcessingUrl("/api/login")
-			.setAuthenticationManager(authenticationManager());
+			.setAuthenticationManager(authenticationManager(http));
 	}
 
 	public AccessDeniedHandler accessDeniedHandler() {
@@ -120,11 +123,11 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public FilterSecurityInterceptor filterSecurityInterceptor() throws Exception {
+	public FilterSecurityInterceptor filterSecurityInterceptor(HttpSecurity http) throws Exception {
 		FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
 		filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
 		filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased());
-		filterSecurityInterceptor.setAuthenticationManager(authenticationManager());
+		filterSecurityInterceptor.setAuthenticationManager(authenticationManager(http));
 		return filterSecurityInterceptor;
 	}
 
@@ -138,7 +141,7 @@ public class SecurityConfig {
 
 	@Bean
 	public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws Exception {
-		return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject());
+		return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject(), securityResourceService);
 	}
 
 	private UrlResourcesMapFactoryBean urlResourcesMapFactoryBean() {
