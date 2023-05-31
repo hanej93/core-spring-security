@@ -12,6 +12,7 @@ import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.AbstractSecurityBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,6 +24,7 @@ import org.springframework.security.web.access.intercept.FilterInvocationSecurit
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
+import io.security.corespringsecurity.security.factory.UrlResourcesMapFactoryBean;
 import io.security.corespringsecurity.security.handler.AjaxAuthenticationFailureHandler;
 import io.security.corespringsecurity.security.handler.AjaxAuthenticationSuccessHandler;
 import io.security.corespringsecurity.security.handler.FormAccessDeniedHandler;
@@ -31,6 +33,7 @@ import io.security.corespringsecurity.security.handler.FormAuthenticationSuccess
 import io.security.corespringsecurity.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.security.corespringsecurity.security.provider.AjaxAuthenticationProvider;
 import io.security.corespringsecurity.security.provider.FormAuthenticationProvider;
+import io.security.corespringsecurity.service.SecurityResourceService;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -49,6 +52,8 @@ public class SecurityConfig {
 
 	private final FormAuthenticationProvider formAuthenticationProvider;
 	private final AjaxAuthenticationProvider ajaxAuthenticationProvider;
+
+	private final SecurityResourceService securityResourceService;
 
 	@Bean
 	AuthenticationManager authenticationManager() throws Exception {
@@ -132,8 +137,15 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() {
-		return new UrlFilterInvocationSecurityMetadataSource();
+	public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws Exception {
+		return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject());
+	}
+
+	private UrlResourcesMapFactoryBean urlResourcesMapFactoryBean() {
+		UrlResourcesMapFactoryBean urlResourcesMapFactoryBean = new UrlResourcesMapFactoryBean();
+		urlResourcesMapFactoryBean.setSecurityResourceService(securityResourceService);
+
+		return urlResourcesMapFactoryBean;
 	}
 
 }
