@@ -25,6 +25,7 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import io.security.corespringsecurity.security.factory.UrlResourcesMapFactoryBean;
+import io.security.corespringsecurity.security.filter.PermitAllFilter;
 import io.security.corespringsecurity.security.handler.AjaxAuthenticationFailureHandler;
 import io.security.corespringsecurity.security.handler.AjaxAuthenticationSuccessHandler;
 import io.security.corespringsecurity.security.handler.FormAccessDeniedHandler;
@@ -41,8 +42,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-	private final AuthenticationConfiguration authenticationConfiguration;
-
 	private final AuthenticationDetailsSource authenticationDetailsSource;
 	private final FormAuthenticationSuccessHandler formAuthenticationSuccessHandler;
 	private final FormAuthenticationFailureHandler formAuthenticationFailureHandler;
@@ -54,6 +53,8 @@ public class SecurityConfig {
 	private final AjaxAuthenticationProvider ajaxAuthenticationProvider;
 
 	private final SecurityResourceService securityResourceService;
+
+	private String[] permitAllPattern = {"/", "/login", "/user/login/**"};
 
 	@Bean
 	AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -74,7 +75,7 @@ public class SecurityConfig {
 		http
 			.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
 				authorizationManagerRequestMatcherRegistry
-					.anyRequest().authenticated();
+					.anyRequest().permitAll();
 			})
 
 			.formLogin(httpSecurityFormLoginConfigurer -> {
@@ -96,9 +97,6 @@ public class SecurityConfig {
 			})
 
 			.csrf(AbstractHttpConfigurer::disable)
-
-			// .authenticationProvider(formAuthenticationProvider)
-			// .authenticationProvider(ajaxAuthenticationProvider)
 
 			.addFilterBefore(filterSecurityInterceptor(http), FilterSecurityInterceptor.class);
 
@@ -123,12 +121,12 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public FilterSecurityInterceptor filterSecurityInterceptor(HttpSecurity http) throws Exception {
-		FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
-		filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
-		filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased());
-		filterSecurityInterceptor.setAuthenticationManager(authenticationManager(http));
-		return filterSecurityInterceptor;
+	public PermitAllFilter filterSecurityInterceptor(HttpSecurity http) throws Exception {
+		PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllPattern);
+		permitAllFilter.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+		permitAllFilter.setAccessDecisionManager(affirmativeBased());
+		permitAllFilter.setAuthenticationManager(authenticationManager(http));
+		return permitAllFilter;
 	}
 
 	private AccessDecisionManager affirmativeBased() {
