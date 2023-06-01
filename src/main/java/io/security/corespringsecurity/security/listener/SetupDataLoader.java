@@ -12,10 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.security.corespringsecurity.domain.entity.AccessIp;
 import io.security.corespringsecurity.domain.entity.Account;
 import io.security.corespringsecurity.domain.entity.Resources;
 import io.security.corespringsecurity.domain.entity.Role;
 import io.security.corespringsecurity.domain.entity.RoleHierarchy;
+import io.security.corespringsecurity.repository.AccessIpRepository;
 import io.security.corespringsecurity.repository.ResourcesRepository;
 import io.security.corespringsecurity.repository.RoleHierarchyRepository;
 import io.security.corespringsecurity.repository.RoleRepository;
@@ -32,6 +34,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     private final RoleRepository roleRepository;
     private final ResourcesRepository resourcesRepository;
     private final RoleHierarchyRepository roleHierarchyRepository;
+    private final AccessIpRepository accessIpRepository;
     private final PasswordEncoder passwordEncoder;
 
     private static AtomicInteger count = new AtomicInteger(0);
@@ -39,12 +42,12 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Override
     @Transactional
     public void onApplicationEvent(final ContextRefreshedEvent event) {
-
         if (alreadySetup) {
             return;
         }
 
         setupSecurityResources();
+        setupAccessIpData();
 
         alreadySetup = true;
     }
@@ -66,7 +69,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     @Transactional
     public Role createRoleIfNotFound(String roleName, String roleDesc) {
-
         Role role = roleRepository.findByRoleName(roleName);
 
         if (role == null) {
@@ -80,7 +82,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     @Transactional
     public Account createUserIfNotFound(final String userName, final String email, final String password, Set<Role> roleSet) {
-
         Account account = userRepository.findByUsername(userName).orElse(null);
 
         if (account == null) {
@@ -112,7 +113,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     @Transactional
     public void createRoleHierarchyIfNotFound(Role childRole, Role parentRole) {
-
         RoleHierarchy roleHierarchy = roleHierarchyRepository.findByChildName(parentRole.getRoleName());
         if (roleHierarchy == null) {
             roleHierarchy = RoleHierarchy.builder()
@@ -130,6 +130,16 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
         RoleHierarchy childRoleHierarchy = roleHierarchyRepository.save(roleHierarchy);
         childRoleHierarchy.setParentName(parentRoleHierarchy);
+    }
+
+    private void setupAccessIpData() {
+        AccessIp byIpAddress = accessIpRepository.findByIpAddress("0:0:0:0:0:0:0:1");
+        if (byIpAddress == null) {
+            AccessIp accessIp = AccessIp.builder()
+                .ipAddress("0:0:0:0:0:0:0:1")
+                .build();
+            accessIpRepository.save(accessIp);
+        }
     }
 
 }

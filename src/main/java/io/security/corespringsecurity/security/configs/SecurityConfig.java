@@ -34,6 +34,7 @@ import io.security.corespringsecurity.security.handler.FormAuthenticationSuccess
 import io.security.corespringsecurity.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.security.corespringsecurity.security.provider.AjaxAuthenticationProvider;
 import io.security.corespringsecurity.security.provider.FormAuthenticationProvider;
+import io.security.corespringsecurity.security.voter.IpAddressVoter;
 import io.security.corespringsecurity.service.SecurityResourceService;
 import lombok.RequiredArgsConstructor;
 
@@ -135,6 +136,7 @@ public class SecurityConfig {
 
 	private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
 		List<AccessDecisionVoter<? extends Object>> accessDecisionVoters = new ArrayList<>();
+		accessDecisionVoters.add(new IpAddressVoter(securityResourceService));
 		accessDecisionVoters.add(roleVoter());
 		return accessDecisionVoters;
 	}
