@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import io.security.corespringsecurity.domain.dto.RoleDto;
 import io.security.corespringsecurity.domain.entity.Role;
 import io.security.corespringsecurity.service.RoleService;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class RoleController {
 
-	@Autowired
-	private RoleService roleService;
+	private final RoleService roleService;
 
 	@GetMapping(value="/admin/roles")
 	public String getRoles(Model model) throws Exception {

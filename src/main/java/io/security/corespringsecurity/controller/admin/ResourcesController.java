@@ -19,21 +19,16 @@ import io.security.corespringsecurity.repository.RoleRepository;
 import io.security.corespringsecurity.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.security.corespringsecurity.service.ResourcesService;
 import io.security.corespringsecurity.service.RoleService;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class ResourcesController {
 	
-	@Autowired
-	private ResourcesService resourcesService;
-
-	@Autowired
-	private RoleRepository roleRepository;
-
-	@Autowired
-	private RoleService roleService;
-
-	@Autowired
-	private UrlFilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource;
+	private final ResourcesService resourcesService;
+	private final RoleRepository roleRepository;
+	private final RoleService roleService;
+	private final UrlFilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource;
 
 	@GetMapping(value="/admin/resources")
 	public String getResources(Model model) throws Exception {

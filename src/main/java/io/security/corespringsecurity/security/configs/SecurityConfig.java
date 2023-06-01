@@ -1,7 +1,6 @@
 package io.security.corespringsecurity.security.configs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -9,11 +8,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.RoleHierarchyVoter;
-import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -139,20 +136,17 @@ public class SecurityConfig {
 	private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
 		List<AccessDecisionVoter<? extends Object>> accessDecisionVoters = new ArrayList<>();
 		accessDecisionVoters.add(roleVoter());
-
 		return accessDecisionVoters;
 	}
 
 	@Bean
 	public AccessDecisionVoter<? extends Object> roleVoter() {
-		RoleHierarchyVoter roleHierarchyVoter = new RoleHierarchyVoter(roleHierarchy());
-		return roleHierarchyVoter;
+		return new RoleHierarchyVoter(roleHierarchy());
 	}
 
 	@Bean
 	public RoleHierarchyImpl roleHierarchy() {
-		RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-		return roleHierarchy ;
+		return new RoleHierarchyImpl();
 	}
 
 	@Bean
@@ -163,7 +157,6 @@ public class SecurityConfig {
 	private UrlResourcesMapFactoryBean urlResourcesMapFactoryBean() {
 		UrlResourcesMapFactoryBean urlResourcesMapFactoryBean = new UrlResourcesMapFactoryBean();
 		urlResourcesMapFactoryBean.setSecurityResourceService(securityResourceService);
-
 		return urlResourcesMapFactoryBean;
 	}
 

@@ -10,17 +10,17 @@ import org.springframework.transaction.annotation.Transactional;
 import io.security.corespringsecurity.domain.entity.RoleHierarchy;
 import io.security.corespringsecurity.repository.RoleHierarchyRepository;
 import io.security.corespringsecurity.service.RoleHierarchyService;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class RoleHierarchyServiceImpl implements RoleHierarchyService {
 
-    @Autowired
-    private RoleHierarchyRepository roleHierarchyRepository;
+    private final RoleHierarchyRepository roleHierarchyRepository;
 
     @Transactional
     @Override
     public String findAllHierarchy() {
-
         List<RoleHierarchy> rolesHierarchy = roleHierarchyRepository.findAll();
 
         Iterator<RoleHierarchy> itr = rolesHierarchy.iterator();

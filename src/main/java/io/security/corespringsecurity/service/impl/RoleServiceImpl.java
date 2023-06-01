@@ -9,14 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 import io.security.corespringsecurity.domain.entity.Role;
 import io.security.corespringsecurity.repository.RoleRepository;
 import io.security.corespringsecurity.service.RoleService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     @Transactional
     public Role getRole(long id) {
@@ -25,13 +26,11 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional
     public List<Role> getRoles() {
-
         return roleRepository.findAll();
     }
 
     @Transactional
     public void createRole(Role role){
-
         roleRepository.save(role);
     }
 

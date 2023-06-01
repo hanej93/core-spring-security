@@ -15,18 +15,15 @@ import io.security.corespringsecurity.domain.dto.AccountDto;
 import io.security.corespringsecurity.domain.entity.Account;
 import io.security.corespringsecurity.repository.RoleRepository;
 import io.security.corespringsecurity.service.UserService;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class UserController {
 	
-	@Autowired
-	private UserService userService;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
-	@Autowired
-	private RoleRepository roleRepository;
+	private final UserService userService;
+	private final PasswordEncoder passwordEncoder;
+	private final RoleRepository roleRepository;
 
 	@GetMapping(value="/users")
 	public String createUser() throws Exception {

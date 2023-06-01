@@ -14,15 +14,14 @@ import io.security.corespringsecurity.domain.entity.Account;
 import io.security.corespringsecurity.domain.entity.Role;
 import io.security.corespringsecurity.service.RoleService;
 import io.security.corespringsecurity.service.UserService;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class UserManagerController {
 	
-	@Autowired
-	private UserService userService;
-
-	@Autowired
-	private RoleService roleService;
+	private final UserService userService;
+	private final RoleService roleService;
 
 	@GetMapping(value="/admin/accounts")
 	public String getUsers(Model model) throws Exception {
