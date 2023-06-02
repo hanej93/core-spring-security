@@ -43,7 +43,6 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
 	private final AuthenticationDetailsSource authenticationDetailsSource;
