@@ -12,10 +12,15 @@ import io.security.corespringsecurity.service.SecurityResourceService;
 public class MethodResourcesFactoryBean implements FactoryBean<LinkedHashMap<String, List<ConfigAttribute>>> {
 
 	private SecurityResourceService securityResourceService;
+	private String resourceType;
 	private LinkedHashMap<String, List<ConfigAttribute>> resourceMap;
 
 	public void setSecurityResourceService(SecurityResourceService securityResourceService) {
 		this.securityResourceService = securityResourceService;
+	}
+
+	public void setResourceType(String resourceType) {
+		this.resourceType = resourceType;
 	}
 
 	@Override
@@ -28,7 +33,11 @@ public class MethodResourcesFactoryBean implements FactoryBean<LinkedHashMap<Str
 	}
 
 	private void init() {
-		resourceMap = securityResourceService.getMethodResourceList();
+		if ("method".equals(resourceType)) {
+			resourceMap = securityResourceService.getMethodResourceList();
+		} else if ("pointcut".equals(resourceType)) {
+			resourceMap = securityResourceService.getPointcutResourceList();
+		}
 	}
 
 	@Override
